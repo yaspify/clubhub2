@@ -1,18 +1,17 @@
+"use client";
+
 import { SearchBar } from "@/components/search-bar"
 import { ClubCard } from "@/components/club-card"
 import Header from "@/components/header"
-import { getAllClubs } from "@/lib/data"
+import { getAllClubs, getClubBySlug } from "@/lib/data"
 import { Badge } from "@/components/ui/badge"
 import { Suspense } from "react"
+import { notFound } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
-interface HomePageProps {
-  searchParams: {
-    tags?: string
-  }
-}
-
-export default function Home({ searchParams }: HomePageProps) {
-  const tags = searchParams.tags ? searchParams.tags.split(",") : []
+export default function Home() {
+  const searchParams = useSearchParams()
+  const tags = searchParams.get("tags") ? searchParams.get("tags")!.split(",") : []
   const allClubs = getAllClubs()
   
   // タグが選択されている場合はクラブをフィルタリング
@@ -61,7 +60,7 @@ export default function Home({ searchParams }: HomePageProps) {
               
               // タグの選択を切り替える
               const newTags = isSelected
-                ? tags.filter(t => t !== tag)
+                ? tags.filter((t: string) => t !== tag)
                 : [...tags, tag]
               
               // クエリ文字列の作成

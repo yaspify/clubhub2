@@ -1,22 +1,19 @@
-import { notFound } from "next/navigation";
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
-import { getClubBySlug } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
+import { getClubBySlug } from "@/lib/data";
+import { notFound } from "next/navigation";
+import { useParams } from "next/navigation";
 
-interface ClubPageProps {
-  params: {
-    slug: string;
-  };
-}
-
-export default function ClubPage({ params }: ClubPageProps) {
-  const club = getClubBySlug(params.slug);
-
+export default function ClubPage() {
+  const params = useParams();
+  const slugParam = typeof params.slug === 'string' ? params.slug : Array.isArray(params.slug) ? params.slug[0] : '';
+  const club = getClubBySlug(slugParam);
   if (!club) {
     notFound();
   }
-
+  
   return (
     <div className="container mx-auto px-4 py-6 space-y-6">
       {/* Profile Image */}
@@ -25,8 +22,9 @@ export default function ClubPage({ params }: ClubPageProps) {
           <Image
             src={club.profileImage}
             alt={club.clubName}
-            layout="fill"
-            objectFit="cover"
+            fill
+            sizes="100vw"
+            style={{ objectFit: "cover" }}
             className="rounded-lg"
           />
         </div>
