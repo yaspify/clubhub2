@@ -1,17 +1,16 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { getClubBySlug } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 
-interface ClubPageProps {
-  params: {
-    slug: string;
-  };
+type ClubPageProps = {
+  params: Promise<{slug: string}>
 }
 
-export default function ClubPage({ params }: ClubPageProps) {
-  const club = getClubBySlug(params.slug);
+export default async function ClubPage({ params }: ClubPageProps) {
+  //const club = getClubBySlug(params.slug);
+  const { slug } = await params;
+  const club = getClubBySlug(slug);
 
   if (!club) {
     notFound();

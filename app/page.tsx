@@ -5,20 +5,20 @@ import { getAllClubs } from "@/lib/data"
 import { Badge } from "@/components/ui/badge"
 import { Suspense } from "react"
 
-interface HomePageProps {
-  searchParams: {
-    tags?: string
-  }
+type HomePageProps = {
+  searchParams: Promise<{[key: string]: string|undefined}>
 }
 
-export default function Home({ searchParams }: HomePageProps) {
-  const tags = searchParams.tags ? searchParams.tags.split(",") : []
+export default async function Home({ searchParams }: HomePageProps) {
+  const {tags} = await searchParams
+  //const tags = searchParams.tags ? searchParams.tags.split(",") : []
+  const tagList = tags? tags.split(",") : []
   const allClubs = getAllClubs()
   
   // タグが選択されている場合はクラブをフィルタリング
-  const clubs = tags.length > 0
+  const clubs = tagList.length > 0
     ? allClubs.filter(club => 
-        club.tags?.some(tag => tags.includes(tag)) || false
+        club.tags?.some(tag => tagList.includes(tag)) || false
       )
     : allClubs
 
@@ -57,12 +57,12 @@ export default function Home({ searchParams }: HomePageProps) {
           <h3 className="font-medium mb-3">タグでフィルター</h3>
           <div className="flex flex-wrap gap-2">
             {uniqueTags.map((tag) => {
-              const isSelected = tags.includes(tag)
+              const isSelected = tagList.includes(tag)
               
               // タグの選択を切り替える
               const newTags = isSelected
-                ? tags.filter(t => t !== tag)
-                : [...tags, tag]
+                ? tagList.filter(t => t !== tag)
+                : [...tagList, tag]
               
               // クエリ文字列の作成
               const queryString = createQueryString("tags", newTags)

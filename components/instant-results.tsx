@@ -89,7 +89,7 @@ export default function InstantResults({ results, query, onViewAll, onResultClic
           </div>
         </>
       ) : (
-        <div className="p-4 text-left text-sm text-muted-foreground">"{query}"の検索結果はありません</div>
+        <div className="p-4 text-left text-sm text-muted-foreground">&quot;{query}&ldquo;の検索結果はありません</div>
       )}
     </div>
   )

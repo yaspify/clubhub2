@@ -3,7 +3,6 @@ import Image from "next/image"
 import { Instagram } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import type { Club } from "@/lib/data"
 
 interface ClubCardProps {
@@ -11,7 +10,7 @@ interface ClubCardProps {
 }
 
 export function ClubCard({ club }: ClubCardProps) {
-  const { slug, clubName, verified, profileImage, activityDetails, externalLinks, tags } = club
+  const { slug, clubName, verified, profileImage, activityDetails, externalLinks } = club
   return (
     <Card className="overflow-hidden h-full flex flex-col py-0 gap-0">
       <CardContent className="p-4 flex-grow">

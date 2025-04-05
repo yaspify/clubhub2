@@ -5,24 +5,25 @@ import { ClubCard } from "@/components/club-card"
 import Header from "@/components/header"
 import { searchClubs, getAllClubs } from "@/lib/data"
 
-interface SearchPageProps {
-  searchParams: {
-    q?: string
-    tags?: string
-  }
+type SearchPageProps = {
+  searchParams: Promise<{[key: string]: string|undefined}>
 }
 
-export default function SearchPage({ searchParams }: SearchPageProps) {
-  const query = searchParams.q || ""
-  const tags = searchParams.tags ? searchParams.tags.split(",") : []
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  // const query = searchParams.q || ""
+  // const tags = searchParams.tags ? searchParams.tags.split(",") : []
+
+  const {q, tags} = await searchParams
+  const tagList = tags? tags.split(",") : []
+  const query = q || ""
   
   // 検索結果を取得
   const searchResults = query ? searchClubs(query) : getAllClubs()
   
   // タグが選択されている場合はフィルタリング
-  const filteredResults = tags.length > 0
+  const filteredResults = tagList.length > 0
     ? searchResults.filter(club => 
-        club.tags?.some(tag => tags.includes(tag)) || false
+        club.tags?.some(tag => tagList.includes(tag)) || false
       )
     : searchResults
 
@@ -69,12 +70,12 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
                 <h3 className="font-medium mb-3">タグでフィルター</h3>
                 <div className="flex flex-wrap gap-2">
                   {uniqueTags.map((tag) => {
-                    const isSelected = tags.includes(tag)
+                    const isSelected = tagList.includes(tag)
                     
                     // タグの選択を切り替える
                     const newTags = isSelected
-                      ? tags.filter(t => t !== tag)
-                      : [...tags, tag]
+                      ? tagList.filter(t => t !== tag)
+                      : [...tagList, tag]
                     
                     // クエリ文字列の作成
                     const queryString = createQueryString("tags", newTags)
